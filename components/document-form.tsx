@@ -136,7 +136,7 @@ export function DocumentForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6 text-black">
       {/* Document Info */}
       <Card>
         <CardHeader>

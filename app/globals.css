@@ -1,27 +1,85 @@
+@import url("https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+/* Global font and smoothing */
+* {
+  font-family: "Cairo", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
 }
 
+/* Root color system */
+:root {
+  --foreground-rgb: 17, 24, 39; /* dark gray */
+  --background-start-rgb: 243, 244, 246; /* light gray */
+  --background-end-rgb: 255, 255, 255; /* white */
+  --accent-rgb: 79, 70, 229; /* indigo accent */
+  --radius: 1.2rem;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Dark mode */
 @media (prefers-color-scheme: dark) {
   :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    --foreground-rgb: 243, 244, 246;
+    --background-start-rgb: 17, 24, 39;
+    --background-end-rgb: 3, 7, 18;
+    --accent-rgb: 129, 140, 248;
+    --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   }
 }
 
+/* Body styles */
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+    to bottom right,
+    rgb(var(--background-start-rgb)),
+    rgb(var(--background-end-rgb))
+  );
+  min-height: 100vh;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Enhanced link and button aesthetics */
+a,
+button {
+  transition: all 0.25s ease;
+}
+
+a:hover,
+button:hover {
+  color: rgb(var(--accent-rgb));
+  transform: translateY(-1px);
+}
+
+/* Smooth cards and containers */
+.card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(var(--accent-rgb), 0.25);
+}
+
+/* Responsive text sizes */
+h1,
+h2,
+h3 {
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+p {
+  line-height: 1.6;
+  color: rgba(var(--foreground-rgb), 0.9);
 }
