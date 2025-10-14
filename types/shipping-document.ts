@@ -8,6 +8,9 @@ export interface CargoItem {
 }
 
 export interface ShippingDocument {
+  departure_date(departure_date: any): import("react").ReactNode;
+  truck_axles(truck_axles: any): import("react").ReactNode;
+  truck_engine_power(truck_engine_power: any): import("react").ReactNode;
   carrier_email: string;
   id?: string;
   created_at?: string;
