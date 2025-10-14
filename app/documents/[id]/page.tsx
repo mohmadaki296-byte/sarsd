@@ -33,7 +33,9 @@ export default async function DocumentPage({
               إغلاق
             </Button>
           </Link>
-          <h1 className="text-lg font-semibold">bayan.logisti.sa</h1>
+          <h1 className="text-lg font-semibold text-gray-400">
+            bayan.logisti.sa
+          </h1>
           <div className="flex gap-2">
             <Button variant="ghost" size="icon">
               <FileText className="h-5 w-5" />
@@ -153,7 +155,7 @@ export default async function DocumentPage({
                 عرض بيانات الحمولة
               </h4>
               <div className="overflow-x-auto">
-                <table className="w-full border border-gray-300">
+                <table className="w-full border border-gray-300 text-gray-600 ">
                   <thead>
                     <tr className="bg-gray-50">
                       <th className="border border-gray-300 p-3 text-center text-sm font-medium">

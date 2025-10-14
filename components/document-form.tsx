@@ -25,7 +25,8 @@ export function DocumentForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  const [formData, setFormData] = useState<ShippingDocument>({
+  // Match the new interfaces: keep form state WITHOUT `id`
+  const [formData, setFormData] = useState<Omit<any, "id">>({
     document_number: "",
     license_number: "",
     status: "محفوظه",
@@ -54,13 +55,11 @@ export function DocumentForm() {
     sender_city: "",
     sender_country: "",
     sender_phone: "",
-    sender_notes: "",
     recipient_name: "",
     recipient_address: "",
     recipient_city: "",
     recipient_country: "",
     recipient_phone: "",
-    recipient_notes: "",
     route_from_city: "",
     route_from_country: "",
     route_to_city: "",
@@ -83,8 +82,8 @@ export function DocumentForm() {
   ]);
 
   const addCargoItem = () => {
-    setCargoItems([
-      ...cargoItems,
+    setCargoItems((prev) => [
+      ...prev,
       {
         description: "",
         quantity: 0,
@@ -97,7 +96,7 @@ export function DocumentForm() {
   };
 
   const removeCargoItem = (index: number) => {
-    setCargoItems(cargoItems.filter((_, i) => i !== index));
+    setCargoItems((prev) => prev.filter((_, i) => i !== index));
   };
 
   const updateCargoItem = (
@@ -105,9 +104,11 @@ export function DocumentForm() {
     field: keyof CargoItem,
     value: string | number
   ) => {
-    const updated = [...cargoItems];
-    updated[index] = { ...updated[index], [field]: value };
-    setCargoItems(updated);
+    setCargoItems((prev) => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], [field]: value };
+      return updated;
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -120,8 +121,9 @@ export function DocumentForm() {
         cargo_items: cargoItems,
         created_at: serverTimestamp(),
         updated_at: serverTimestamp(),
-      };
+      } as const;
 
+      // Store WITHOUT an `id` field; we'll use the generated id for navigation.
       const docRef = await addDoc(
         collection(db, "shipping_documents"),
         documentData
@@ -641,7 +643,7 @@ export function DocumentForm() {
                 <div className="md:col-span-3">
                   <Label>وصف البضاعة</Label>
                   <Input
-                    value={item.description}
+                    value={item.description ?? ""}
                     onChange={(e) =>
                       updateCargoItem(index, "description", e.target.value)
                     }
@@ -651,9 +653,18 @@ export function DocumentForm() {
                   <Label>العدد</Label>
                   <Input
                     type="number"
-                    value={item.quantity}
+                    min={0}
+                    value={
+                      typeof item.quantity === "number"
+                        ? item.quantity
+                        : item.quantity ?? ""
+                    }
                     onChange={(e) =>
-                      updateCargoItem(index, "quantity", Number(e.target.value))
+                      updateCargoItem(
+                        index,
+                        "quantity",
+                        e.target.value === "" ? "" : Number(e.target.value)
+                      )
                     }
                   />
                 </div>
@@ -662,16 +673,25 @@ export function DocumentForm() {
                   <Input
                     type="number"
                     step="0.001"
-                    value={item.weight}
+                    min={0}
+                    value={
+                      typeof item.weight === "number"
+                        ? item.weight
+                        : item.weight ?? ""
+                    }
                     onChange={(e) =>
-                      updateCargoItem(index, "weight", Number(e.target.value))
+                      updateCargoItem(
+                        index,
+                        "weight",
+                        e.target.value === "" ? "" : Number(e.target.value)
+                      )
                     }
                   />
                 </div>
                 <div>
                   <Label>الوحدة</Label>
                   <Select
-                    value={item.unit}
+                    value={item.unit ?? "طن"}
                     onValueChange={(value) =>
                       updateCargoItem(index, "unit", value)
                     }
@@ -689,7 +709,7 @@ export function DocumentForm() {
                 <div>
                   <Label>الأبعاد (متر)</Label>
                   <Input
-                    value={item.dimensions}
+                    value={item.dimensions ?? ""}
                     onChange={(e) =>
                       updateCargoItem(index, "dimensions", e.target.value)
                     }
@@ -698,7 +718,7 @@ export function DocumentForm() {
                 <div>
                   <Label>الحالة</Label>
                   <Select
-                    value={item.status}
+                    value={item.status ?? "سليمة"}
                     onValueChange={(value) =>
                       updateCargoItem(index, "status", value)
                     }

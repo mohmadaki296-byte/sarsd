@@ -24,6 +24,7 @@
     "lucide-react": "^0.545.0",
     "next": "13.5.1",
     "postcss": "8.4.30",
+    "qrcode": "^1.5.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "tailwind-merge": "^3.3.1",
