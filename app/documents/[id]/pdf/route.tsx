@@ -1,20 +1,23 @@
-import { db } from "@/lib/firebase-client"
-import { doc, getDoc } from "firebase/firestore"
-import { type NextRequest, NextResponse } from "next/server"
-import type { ShippingDocument, CargoItem } from "@/types/shipping-document"
+import { db } from "@/lib/firestore";
+import { doc, getDoc } from "firebase/firestore";
+import { type NextRequest, NextResponse } from "next/server";
+import type { ShippingDocument, CargoItem } from "@/types/shipping-document";
 
-export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
 
-  const docRef = doc(db, "shipping_documents", id)
-  const docSnap = await getDoc(docRef)
+  const docRef = doc(db, "shipping_documents", id);
+  const docSnap = await getDoc(docRef);
 
   if (!docSnap.exists()) {
-    return NextResponse.json({ error: "Document not found" }, { status: 404 })
+    return NextResponse.json({ error: "Document not found" }, { status: 404 });
   }
 
-  const document = { id: docSnap.id, ...docSnap.data() } as ShippingDocument
-  const cargoItems = (document.cargo_items as CargoItem[]) || []
+  const document = { id: docSnap.id, ...docSnap.data() } as ShippingDocument;
+  const cargoItems = (document.cargo_items as CargoItem[]) || [];
 
   // Generate HTML for PDF
   const html = `
@@ -176,7 +179,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           <div>
             <div class="field">
               <span class="field-label">تاريخ الاستلام:</span>
-              <span class="field-value">${document.receipt_date || "لم يحدد"}</span>
+              <span class="field-value">${
+                document.receipt_date || "لم يحدد"
+              }</span>
             </div>
             <div class="field">
               <span class="field-label">الحالة:</span>
@@ -214,7 +219,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           </div>
           <div class="field">
             <span class="field-label">الجنسية:</span>
-            <span class="field-value">${document.driver_nationality || ""}</span>
+            <span class="field-value">${
+              document.driver_nationality || ""
+            }</span>
           </div>
           <div class="field">
             <span class="field-label">تاريخ ميلاد السائق:</span>
@@ -240,7 +247,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           </div>
           <div class="field">
             <span class="field-label">رقم اللوحة:</span>
-            <span class="field-value">${document.truck_plate_number || ""}</span>
+            <span class="field-value">${
+              document.truck_plate_number || ""
+            }</span>
           </div>
           <div class="field">
             <span class="field-label">ترميز اللوحة:</span>
@@ -248,7 +257,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           </div>
           <div class="field">
             <span class="field-label">رمز مجموعة التصنيف:</span>
-            <span class="field-value">${document.truck_classification_code || ""}</span>
+            <span class="field-value">${
+              document.truck_classification_code || ""
+            }</span>
           </div>
           <div class="field">
             <span class="field-label">اللون:</span>
@@ -256,7 +267,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           </div>
           <div class="field">
             <span class="field-label">${document.truck_type || "تريلا"}:</span>
-            <span class="field-value">${document.truck_plate_number || ""}</span>
+            <span class="field-value">${
+              document.truck_plate_number || ""
+            }</span>
           </div>
         </div>
       </div>
@@ -267,7 +280,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       <div class="section-title">خط سير الرحلة</div>
       <div class="section-content">
         <div style="text-align: center; font-weight: bold;">
-          من ${document.route_from_city || ""}, ${document.route_from_country || ""} الى ${document.route_to_city || ""}, ${document.route_to_country || ""}
+          من ${document.route_from_city || ""}, ${
+    document.route_from_country || ""
+  } الى ${document.route_to_city || ""}, ${document.route_to_country || ""}
         </div>
       </div>
     </div>
@@ -357,7 +372,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
                 <td>${item.dimensions || ""}</td>
                 <td>${item.status || ""}</td>
               </tr>
-            `,
+            `
               )
               .join("")}
           </tbody>
@@ -406,7 +421,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         </div>
         <div class="field">
           <span class="field-label">قابلة للتداول:</span>
-          <span class="field-value">${document.is_negotiable ? "نعم" : "لا"}</span>
+          <span class="field-value">${
+            document.is_negotiable ? "نعم" : "لا"
+          }</span>
         </div>
       </div>
     </div>
@@ -425,12 +442,12 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   </div>
 </body>
 </html>
-  `
+  `;
 
   return new NextResponse(html, {
     headers: {
       "Content-Type": "text/html; charset=utf-8",
       "Content-Disposition": `inline; filename="document-${document.document_number}.html"`,
     },
-  })
+  });
 }

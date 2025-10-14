@@ -1,20 +1,24 @@
-import { db } from "@/lib/firebase-client"
-import { doc, getDoc } from "firebase/firestore"
-import { notFound } from "next/navigation"
-import type { ShippingDocument, CargoItem } from "@/types/shipping-document"
+import { db } from "@/lib/firestore";
+import { doc, getDoc } from "firebase/firestore";
+import { notFound } from "next/navigation";
+import type { ShippingDocument, CargoItem } from "@/types/shipping-document";
 
-export default async function PDFPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params
+export default async function PDFPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
 
-  const docRef = doc(db, "shipping_documents", id)
-  const docSnap = await getDoc(docRef)
+  const docRef = doc(db, "shipping_documents", id);
+  const docSnap = await getDoc(docRef);
 
   if (!docSnap.exists()) {
-    notFound()
+    notFound();
   }
 
-  const document = { id: docSnap.id, ...docSnap.data() } as ShippingDocument
-  const cargoItems = (document.cargo_items as CargoItem[]) || []
+  const document = { id: docSnap.id, ...docSnap.data() } as ShippingDocument;
+  const cargoItems = (document.cargo_items as CargoItem[]) || [];
 
   return (
     <html dir="rtl" lang="ar">
@@ -175,17 +179,23 @@ export default async function PDFPage({ params }: { params: Promise<{ id: string
                 <div>
                   <div className="field">
                     <span className="field-label">الإسم:</span>
-                    <span className="field-value">{document.carrier_name || ""}</span>
+                    <span className="field-value">
+                      {document.carrier_name || ""}
+                    </span>
                   </div>
                   <div className="field">
                     <span className="field-label">رقم الهاتف:</span>
-                    <span className="field-value">{document.carrier_phone || ""}</span>
+                    <span className="field-value">
+                      {document.carrier_phone || ""}
+                    </span>
                   </div>
                 </div>
                 <div>
                   <div className="field">
                     <span className="field-label">تاريخ الاستلام:</span>
-                    <span className="field-value">{document.receipt_date || "لم يحدد"}</span>
+                    <span className="field-value">
+                      {document.receipt_date || "لم يحدد"}
+                    </span>
                   </div>
                   <div className="field">
                     <span className="field-label">الحالة:</span>
@@ -209,27 +219,39 @@ export default async function PDFPage({ params }: { params: Promise<{ id: string
               <div className="section-content">
                 <div className="field">
                   <span className="field-label">اسم السائق:</span>
-                  <span className="field-value">{document.driver_name || ""}</span>
+                  <span className="field-value">
+                    {document.driver_name || ""}
+                  </span>
                 </div>
                 <div className="field">
                   <span className="field-label">رقم هوية السائق:</span>
-                  <span className="field-value">{document.driver_id_number || ""}</span>
+                  <span className="field-value">
+                    {document.driver_id_number || ""}
+                  </span>
                 </div>
                 <div className="field">
                   <span className="field-label">نوع الهوية:</span>
-                  <span className="field-value">{document.driver_id_type || ""}</span>
+                  <span className="field-value">
+                    {document.driver_id_type || ""}
+                  </span>
                 </div>
                 <div className="field">
                   <span className="field-label">الجنسية:</span>
-                  <span className="field-value">{document.driver_nationality || ""}</span>
+                  <span className="field-value">
+                    {document.driver_nationality || ""}
+                  </span>
                 </div>
                 <div className="field">
                   <span className="field-label">تاريخ ميلاد السائق:</span>
-                  <span className="field-value">{document.driver_birth_date || ""}</span>
+                  <span className="field-value">
+                    {document.driver_birth_date || ""}
+                  </span>
                 </div>
                 <div className="field">
                   <span className="field-label">رقم جوال السائق:</span>
-                  <span className="field-value">{document.driver_phone || ""}</span>
+                  <span className="field-value">
+                    {document.driver_phone || ""}
+                  </span>
                 </div>
               </div>
             </div>
@@ -239,31 +261,47 @@ export default async function PDFPage({ params }: { params: Promise<{ id: string
               <div className="section-content">
                 <div className="field">
                   <span className="field-label">الدولة:</span>
-                  <span className="field-value">{document.truck_country || ""}</span>
+                  <span className="field-value">
+                    {document.truck_country || ""}
+                  </span>
                 </div>
                 <div className="field">
                   <span className="field-label">المدينة:</span>
-                  <span className="field-value">{document.truck_city || ""}</span>
+                  <span className="field-value">
+                    {document.truck_city || ""}
+                  </span>
                 </div>
                 <div className="field">
                   <span className="field-label">رقم اللوحة:</span>
-                  <span className="field-value">{document.truck_plate_number || ""}</span>
+                  <span className="field-value">
+                    {document.truck_plate_number || ""}
+                  </span>
                 </div>
                 <div className="field">
                   <span className="field-label">ترميز اللوحة:</span>
-                  <span className="field-value">{document.truck_plate_code || ""}</span>
+                  <span className="field-value">
+                    {document.truck_plate_code || ""}
+                  </span>
                 </div>
                 <div className="field">
                   <span className="field-label">رمز مجموعة التصنيف:</span>
-                  <span className="field-value">{document.truck_classification_code || ""}</span>
+                  <span className="field-value">
+                    {document.truck_classification_code || ""}
+                  </span>
                 </div>
                 <div className="field">
                   <span className="field-label">اللون:</span>
-                  <span className="field-value">{document.truck_color || ""}</span>
+                  <span className="field-value">
+                    {document.truck_color || ""}
+                  </span>
                 </div>
                 <div className="field">
-                  <span className="field-label">{document.truck_type || "تريلا"}:</span>
-                  <span className="field-value">{document.truck_plate_number || ""}</span>
+                  <span className="field-label">
+                    {document.truck_type || "تريلا"}:
+                  </span>
+                  <span className="field-value">
+                    {document.truck_plate_number || ""}
+                  </span>
                 </div>
               </div>
             </div>
@@ -274,8 +312,10 @@ export default async function PDFPage({ params }: { params: Promise<{ id: string
             <div className="section-title">خط سير الرحلة</div>
             <div className="section-content">
               <div style={{ textAlign: "center", fontWeight: "bold" }}>
-                من {document.route_from_city || ""}, {document.route_from_country || ""} الى{" "}
-                {document.route_to_city || ""}, {document.route_to_country || ""}
+                من {document.route_from_city || ""},{" "}
+                {document.route_from_country || ""} الى{" "}
+                {document.route_to_city || ""},{" "}
+                {document.route_to_country || ""}
               </div>
             </div>
           </div>
@@ -287,23 +327,33 @@ export default async function PDFPage({ params }: { params: Promise<{ id: string
               <div className="section-content">
                 <div className="field">
                   <span className="field-label">الإسم:</span>
-                  <span className="field-value">{document.sender_name || ""}</span>
+                  <span className="field-value">
+                    {document.sender_name || ""}
+                  </span>
                 </div>
                 <div className="field">
                   <span className="field-label">العنوان:</span>
-                  <span className="field-value">{document.sender_address || ""}</span>
+                  <span className="field-value">
+                    {document.sender_address || ""}
+                  </span>
                 </div>
                 <div className="field">
                   <span className="field-label">المدينة:</span>
-                  <span className="field-value">{document.sender_city || ""}</span>
+                  <span className="field-value">
+                    {document.sender_city || ""}
+                  </span>
                 </div>
                 <div className="field">
                   <span className="field-label">الدولة:</span>
-                  <span className="field-value">{document.sender_country || ""}</span>
+                  <span className="field-value">
+                    {document.sender_country || ""}
+                  </span>
                 </div>
                 <div className="field">
                   <span className="field-label">رقم الهاتف:</span>
-                  <span className="field-value">{document.sender_phone || ""}</span>
+                  <span className="field-value">
+                    {document.sender_phone || ""}
+                  </span>
                 </div>
               </div>
             </div>
@@ -313,23 +363,33 @@ export default async function PDFPage({ params }: { params: Promise<{ id: string
               <div className="section-content">
                 <div className="field">
                   <span className="field-label">الإسم:</span>
-                  <span className="field-value">{document.recipient_name || ""}</span>
+                  <span className="field-value">
+                    {document.recipient_name || ""}
+                  </span>
                 </div>
                 <div className="field">
                   <span className="field-label">العنوان:</span>
-                  <span className="field-value">{document.recipient_address || ""}</span>
+                  <span className="field-value">
+                    {document.recipient_address || ""}
+                  </span>
                 </div>
                 <div className="field">
                   <span className="field-label">المدينة:</span>
-                  <span className="field-value">{document.recipient_city || ""}</span>
+                  <span className="field-value">
+                    {document.recipient_city || ""}
+                  </span>
                 </div>
                 <div className="field">
                   <span className="field-label">الدولة:</span>
-                  <span className="field-value">{document.recipient_country || ""}</span>
+                  <span className="field-value">
+                    {document.recipient_country || ""}
+                  </span>
                 </div>
                 <div className="field">
                   <span className="field-label">رقم الهاتف:</span>
-                  <span className="field-value">{document.recipient_phone || ""}</span>
+                  <span className="field-value">
+                    {document.recipient_phone || ""}
+                  </span>
                 </div>
               </div>
             </div>
@@ -377,17 +437,23 @@ export default async function PDFPage({ params }: { params: Promise<{ id: string
               <div className="two-columns">
                 <div className="field">
                   <span className="field-label">تدفع من قبل:</span>
-                  <span className="field-value">{document.payment_by || ""}</span>
+                  <span className="field-value">
+                    {document.payment_by || ""}
+                  </span>
                 </div>
                 <div className="field">
                   <span className="field-label">طريقة دفع الأجور:</span>
-                  <span className="field-value">{document.payment_method || ""}</span>
+                  <span className="field-value">
+                    {document.payment_method || ""}
+                  </span>
                 </div>
               </div>
               {document.payment_instructions && (
                 <div className="field" style={{ marginTop: "8px" }}>
                   <span className="field-label">تعليمات خاصة بدفع الأجور:</span>
-                  <span className="field-value">{document.payment_instructions}</span>
+                  <span className="field-value">
+                    {document.payment_instructions}
+                  </span>
                 </div>
               )}
             </div>
@@ -400,11 +466,15 @@ export default async function PDFPage({ params }: { params: Promise<{ id: string
               <div className="section-content">
                 <div className="field">
                   <span className="field-label">رقم الوثيقة:</span>
-                  <span className="field-value">{document.cargo_document_number}</span>
+                  <span className="field-value">
+                    {document.cargo_document_number}
+                  </span>
                 </div>
                 <div className="field">
                   <span className="field-label">قابلة للتداول:</span>
-                  <span className="field-value">{document.is_negotiable ? "نعم" : "لا"}</span>
+                  <span className="field-value">
+                    {document.is_negotiable ? "نعم" : "لا"}
+                  </span>
                 </div>
               </div>
             </div>
@@ -417,5 +487,5 @@ export default async function PDFPage({ params }: { params: Promise<{ id: string
         </div>
       </body>
     </html>
-  )
+  );
 }
