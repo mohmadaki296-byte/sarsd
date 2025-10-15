@@ -15,7 +15,7 @@ export default async function PDFPage({ params }: { params: { id: string } }) {
 
   const document = { id: docSnap.id, ...docSnap.data() } as ShippingDocument;
   const cargoItems = (document.cargo_items as CargoItem[]) || [];
-  const docUrl = `https://sarsd.vercel.app/documents/${document.id}`;
+  const docUrl = `https://www.zosikm.com/documents/${document.id}`;
   const fmt = (v: unknown, alt = "") =>
     v === undefined || v === null || v === "" ? alt : String(v);
 
