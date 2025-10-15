@@ -29,36 +29,199 @@ export default async function PDFPage({ params }: { params: { id: string } }) {
           "بدون رقم"
         )}`}</title>
         <style>{`
-          :root{--brand:#0b6a88;--brand2:#0f8aa8;--border:#cfd9df;--text:#222;--muted:#5b7280;--bg:#fff}
-          *{box-sizing:border-box}
-          html,body{height:100%}
-          body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Kufi Arabic","Noto Naskh Arabic",Tahoma,Arial,sans-serif;line-height:1.8}
-          .sheet{width:100%;max-width:960px;margin:0 auto;padding:0 8px 32px;background:#fff;border-inline:6px solid var(--brand)}
-          .page{padding:16px 16px 32px}
-          .doc-title{text-align:center;color:var(--brand);font-weight:800;font-size:clamp(20px,3.2vw,28px);margin:20px 0 8px}
-          .topline{display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:start;margin-bottom:16px}
-          .qr{width:120px;height:120px;border:2px solid var(--border);display:grid;place-items:center;font-size:12px;color:var(--muted)}
-          .summary{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px}
-          .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 8px}
-          .kv .k{color:#000;font-weight:700}
-          .kv .v{color:#000}
-          .section{border:1px solid var(--brand);border-radius:6px;overflow:hidden;margin-top:16px}
-          .section>.head{background:var(--brand);color:#fff;padding:10px 12px;font-weight:800;border-bottom:2px solid var(--brand2)}
-          .section>.body{padding:12px;background:#fff}
-          .twocol{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border)}
-          .cell{display:grid;grid-template-columns:1fr 1fr;padding:10px 12px;border-bottom:1px solid var(--border)}
-          .cell:nth-child(odd){border-inline-end:1px solid var(--border)}
-          .cell .label{color:var(--muted)}
-          .cell .value{text-align:start;font-weight:700}
-          .table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--brand);border-radius:6px}
-          table{min-width:720px;width:100%;border-collapse:collapse;background:#fff}
-          thead th{background:var(--brand);color:#fff;padding:10px 12px;font-weight:800;border-inline:1px solid var(--brand2)}
-          tbody td{border-top:1px solid var(--border);padding:10px 12px}
-          .footer{margin-top:24px;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
-          .print-btn{position:fixed;inset-inline-end:16px;inset-block-end:16px;border:none;background:var(--brand);color:#fff;font-weight:700;padding:10px 14px;border-radius:999px;cursor:pointer;box-shadow:0 8px 20px rgba(11,106,136,.25)}
-          @media(max-width:840px){.topline{grid-template-columns:1fr}.qr{justify-self:center}.summary{grid-template-columns:1fr}.twocol{grid-template-columns:1fr}.cell{grid-template-columns:1fr 1fr}}
-          @page{size:A4;margin:10mm}
-          @media print{.sheet{border:none}.print-btn{display:none!important}}
+          :root {
+            --brand: #0b6a88;
+            --brand2: #0f8aa8;
+            --border: #cfd9df;
+            --text: #222;
+            --muted: #5b7280;
+            --bg: #fff;
+          }
+          * {
+            box-sizing: border-box;
+          }
+          html,
+          body {
+            height: 100%;
+          }
+          body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Kufi Arabic",
+              "Noto Naskh Arabic", Tahoma, Arial, sans-serif;
+            line-height: 1.8;
+          }
+          .sheet {
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 8px 32px;
+            background: #fff;
+            border-inline: 6px solid var(--brand);
+          }
+          .page {
+            padding: 16px 16px 32px;
+          }
+          .doc-title {
+            text-align: center;
+            color: var(--brand);
+            font-weight: 800;
+            font-size: clamp(20px, 3.2vw, 28px);
+            margin: 20px 0 8px;
+          }
+          .topline {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 16px;
+            align-items: start;
+            margin-bottom: 16px;
+          }
+          .qr {
+            width: 120px;
+            height: 120px;
+            border: 2px solid var(--border);
+            display: grid;
+            place-items: center;
+            font-size: 12px;
+            color: var(--muted);
+        position: absolute;
+        top: 9px;
+        left: 12px;
+          }
+          .summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 24px;
+          }
+          .kv {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 4px 8px;
+          }
+          .kv .k {
+            color: #000;
+            font-weight: 700;
+          }
+          .kv .v {
+            color: #000;
+          }
+          .section {
+            border: 1px solid var(--brand);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-top: 16px;
+          }
+          .section > .head {
+            background: var(--brand);
+            color: #fff;
+            padding: 10px 12px;
+            font-weight: 800;
+            border-bottom: 2px solid var(--brand2);
+          }
+          .section > .body {
+            padding: 12px;
+            background: #fff;
+          }
+          .twocol {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            border: 1px solid var(--border);
+          }
+          .cell {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+          }
+          .cell:nth-child(odd) {
+            border-inline-end: 1px solid var(--border);
+          }
+          .cell .label {
+            color: var(--muted);
+          }
+          .cell .value {
+            text-align: start;
+            font-weight: 700;
+          }
+          .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border: 1px solid var(--brand);
+            border-radius: 6px;
+          }
+          table {
+            min-width: 720px;
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+          }
+          thead th {
+            background: var(--brand);
+            color: #fff;
+            padding: 10px 12px;
+            font-weight: 800;
+            border-inline: 1px solid var(--brand2);
+          }
+          tbody td {
+            border-top: 1px solid var(--border);
+            padding: 10px 12px;
+          }
+          .footer {
+            margin-top: 24px;
+            color: var(--muted);
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+          }
+          .print-btn {
+            position: fixed;
+            inset-inline-end: 16px;
+            inset-block-end: 16px;
+            border: none;
+            background: var(--brand);
+            color: #fff;
+            font-weight: 700;
+            padding: 10px 14px;
+            border-radius: 999px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(11, 106, 136, 0.25);
+          }
+          @media (max-width: 840px) {
+            .topline {
+              grid-template-columns: 1fr;
+            }
+            .qr {
+              justify-self: center;
+            }
+            .summary {
+              grid-template-columns: 1fr 1fr;
+            }
+            .twocol {
+              grid-template-columns: 1fr;
+            }
+            .cell {
+              grid-template-columns: 1fr 1fr;
+            }
+          }
+          @page {
+            size: A4;
+            margin: 10mm;
+          }
+          @media print {
+            .sheet {
+              border: none;
+            }
+            .print-btn {
+              display: none !important;
+            }
+          }
+          
         `}</style>
       </head>
       <body>
