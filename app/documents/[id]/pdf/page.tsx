@@ -3,488 +3,349 @@ import { doc, getDoc } from "firebase/firestore";
 import { notFound } from "next/navigation";
 import type { ShippingDocument, CargoItem } from "@/types/shipping-document";
 
-export default async function PDFPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
+// Server Component (App Router): app/(whatever)/pdf/[id]/page.tsx
+export default async function PDFPage({ params }: { params: { id: string } }) {
+  const { id } = params;
 
   const docRef = doc(db, "shipping_documents", id);
   const docSnap = await getDoc(docRef);
-
   if (!docSnap.exists()) {
     notFound();
   }
-
+  const handlePrint = () => {
+    (window as any).print?.();
+  };
   const document = { id: docSnap.id, ...docSnap.data() } as ShippingDocument;
   const cargoItems = (document.cargo_items as CargoItem[]) || [];
+  const docUrl = `https://sarsd.vercel.app/documents/${document.id}/pdf`;
+  const fmt = (v: unknown, alt = "") =>
+    v === undefined || v === null || v === "" ? alt : String(v);
 
   return (
     <html dir="rtl" lang="ar">
       <head>
         <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>وثيقة نقل - {document.document_number}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{`وثيقة نقل - ${fmt(
+          document.document_number,
+          "بدون رقم"
+        )}`}</title>
         <style>{`
-          @page {
-            size: A4;
-            margin: 15mm;
-          }
-          
-          * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-          }
-          
-          body {
-            font-family: 'Arial', sans-serif;
-            font-size: 11pt;
-            line-height: 1.4;
-            color: #000;
-            direction: rtl;
-            background: white;
-          }
-          
-          .page {
-            width: 100%;
-            max-width: 210mm;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-          }
-          
-          .header {
-            text-align: center;
-            border: 2px solid #000;
-            padding: 10px;
-            margin-bottom: 10px;
-            background: #f5f5f5;
-          }
-          
-          .header h1 {
-            font-size: 18pt;
-            font-weight: bold;
-            margin-bottom: 8px;
-          }
-          
-          .header-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 10pt;
-            margin-top: 8px;
-          }
-          
-          .section {
-            border: 1px solid #000;
-            margin-bottom: 10px;
-            page-break-inside: avoid;
-          }
-          
-          .section-title {
-            background: #e0e0e0;
-            padding: 6px 10px;
-            font-weight: bold;
-            font-size: 11pt;
-            border-bottom: 1px solid #000;
-          }
-          
-          .section-content {
-            padding: 10px;
-          }
-          
-          .two-columns {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-          }
-          
-          .field {
-            margin-bottom: 8px;
-            font-size: 10pt;
-          }
-          
-          .field-label {
-            font-weight: bold;
-            display: inline;
-          }
-          
-          .field-value {
-            display: inline;
-          }
-          
-          table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 9pt;
-            margin-top: 8px;
-          }
-          
-          table th {
-            background: #e0e0e0;
-            border: 1px solid #000;
-            padding: 6px;
-            text-align: right;
-            font-weight: bold;
-          }
-          
-          table td {
-            border: 1px solid #000;
-            padding: 6px;
-            text-align: right;
-          }
-          
-          .footer {
-            margin-top: 15px;
-            text-align: center;
-            font-size: 9pt;
-            color: #666;
-            border-top: 1px solid #ccc;
-            padding-top: 8px;
-          }
-          
-          .page-number {
-            text-align: left;
-            font-size: 9pt;
-            margin-top: 10px;
-          }
-          
-          @media print {
-            body {
-              background: white;
-            }
-            .page {
-              padding: 0;
-            }
-          }
+          :root{--brand:#0b6a88;--brand2:#0f8aa8;--border:#cfd9df;--text:#222;--muted:#5b7280;--bg:#fff}
+          *{box-sizing:border-box}
+          html,body{height:100%}
+          body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Kufi Arabic","Noto Naskh Arabic",Tahoma,Arial,sans-serif;line-height:1.8}
+          .sheet{width:100%;max-width:960px;margin:0 auto;padding:0 8px 32px;background:#fff;border-inline:6px solid var(--brand)}
+          .page{padding:16px 16px 32px}
+          .doc-title{text-align:center;color:var(--brand);font-weight:800;font-size:clamp(20px,3.2vw,28px);margin:20px 0 8px}
+          .topline{display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:start;margin-bottom:16px}
+          .qr{width:120px;height:120px;border:2px solid var(--border);display:grid;place-items:center;font-size:12px;color:var(--muted)}
+          .summary{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px}
+          .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 8px}
+          .kv .k{color:#000;font-weight:700}
+          .kv .v{color:#000}
+          .section{border:1px solid var(--brand);border-radius:6px;overflow:hidden;margin-top:16px}
+          .section>.head{background:var(--brand);color:#fff;padding:10px 12px;font-weight:800;border-bottom:2px solid var(--brand2)}
+          .section>.body{padding:12px;background:#fff}
+          .twocol{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border)}
+          .cell{display:grid;grid-template-columns:1fr 1fr;padding:10px 12px;border-bottom:1px solid var(--border)}
+          .cell:nth-child(odd){border-inline-end:1px solid var(--border)}
+          .cell .label{color:var(--muted)}
+          .cell .value{text-align:start;font-weight:700}
+          .table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--brand);border-radius:6px}
+          table{min-width:720px;width:100%;border-collapse:collapse;background:#fff}
+          thead th{background:var(--brand);color:#fff;padding:10px 12px;font-weight:800;border-inline:1px solid var(--brand2)}
+          tbody td{border-top:1px solid var(--border);padding:10px 12px}
+          .footer{margin-top:24px;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+          .print-btn{position:fixed;inset-inline-end:16px;inset-block-end:16px;border:none;background:var(--brand);color:#fff;font-weight:700;padding:10px 14px;border-radius:999px;cursor:pointer;box-shadow:0 8px 20px rgba(11,106,136,.25)}
+          @media(max-width:840px){.topline{grid-template-columns:1fr}.qr{justify-self:center}.summary{grid-template-columns:1fr}.twocol{grid-template-columns:1fr}.cell{grid-template-columns:1fr 1fr}}
+          @page{size:A4;margin:10mm}
+          @media print{.sheet{border:none}.print-btn{display:none!important}}
         `}</style>
       </head>
       <body>
-        <div className="page">
-          {/* Header */}
-          <div className="header">
-            <h1>وثيقة نقل</h1>
-            <div className="header-info">
-              <div>رقم الوثيقة: {document.document_number || ""}</div>
-              <div>رقم الترخيص: {document.license_number || ""}</div>
-            </div>
-          </div>
-
-          {/* Carrier Info */}
-          <div className="section">
-            <div className="section-title">بيانات الناقل</div>
-            <div className="section-content">
-              <div className="two-columns">
-                <div>
-                  <div className="field">
-                    <span className="field-label">الإسم:</span>
-                    <span className="field-value">
-                      {document.carrier_name || ""}
-                    </span>
-                  </div>
-                  <div className="field">
-                    <span className="field-label">رقم الهاتف:</span>
-                    <span className="field-value">
-                      {document.carrier_phone || ""}
-                    </span>
+        <section className="sheet" style={{ zoom: 0.5 }}>
+          <img src="/lojfds.png" id="qr-img" />
+          <div className="page">
+            <div className="doc-title">وثيقة نقل</div>
+            <div className="topline">
+              <img
+                src={
+                  "https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=" +
+                  encodeURIComponent(new URL(docUrl).href)
+                }
+                id="qr-img"
+                className="qr"
+              />
+              <div className="summary">
+                <div className="kv">
+                  <div className="k">رقم الوثيقة:</div>
+                  <div className="v">{fmt(document.document_number)}</div>
+                </div>
+                <div className="kv">
+                  <div className="k">تاريخ الاستلام:</div>
+                  <div className="v">
+                    {fmt(document.receipt_date, "لم يحدد")}
                   </div>
                 </div>
-                <div>
-                  <div className="field">
-                    <span className="field-label">تاريخ الاستلام:</span>
-                    <span className="field-value">
-                      {document.receipt_date || "لم يحدد"}
-                    </span>
-                  </div>
-                  <div className="field">
-                    <span className="field-label">الحالة:</span>
-                    <span className="field-value">{document.status || ""}</span>
+                <div className="kv">
+                  <div className="k">الحالة:</div>
+                  <div className="v">{fmt(document.status)}</div>
+                </div>
+                <div className="kv">
+                  <div className="k">تاريخ الخروج:</div>
+                  <div className="v">
+                    {fmt(document.departure_date, "لم يحدد")}
                   </div>
                 </div>
-              </div>
-              {document.carrier_notes && (
-                <div className="field" style={{ marginTop: "8px" }}>
-                  <span className="field-label">ملاحظات الناقل:</span>
-                  <span className="field-value">{document.carrier_notes}</span>
+                <div className="kv">
+                  <div className="k">رقم الهاتف:</div>
+                  <div className="v">{fmt(document.carrier_phone)}</div>
                 </div>
-              )}
-            </div>
-          </div>
-
-          {/* Driver and Truck Info */}
-          <div className="two-columns">
-            <div className="section">
-              <div className="section-title">بيانات السائق</div>
-              <div className="section-content">
-                <div className="field">
-                  <span className="field-label">اسم السائق:</span>
-                  <span className="field-value">
-                    {document.driver_name || ""}
-                  </span>
-                </div>
-                <div className="field">
-                  <span className="field-label">رقم هوية السائق:</span>
-                  <span className="field-value">
-                    {document.driver_id_number || ""}
-                  </span>
-                </div>
-                <div className="field">
-                  <span className="field-label">نوع الهوية:</span>
-                  <span className="field-value">
-                    {document.driver_id_type || ""}
-                  </span>
-                </div>
-                <div className="field">
-                  <span className="field-label">الجنسية:</span>
-                  <span className="field-value">
-                    {document.driver_nationality || ""}
-                  </span>
-                </div>
-                <div className="field">
-                  <span className="field-label">تاريخ ميلاد السائق:</span>
-                  <span className="field-value">
-                    {document.driver_birth_date || ""}
-                  </span>
-                </div>
-                <div className="field">
-                  <span className="field-label">رقم جوال السائق:</span>
-                  <span className="field-value">
-                    {document.driver_phone || ""}
-                  </span>
+                <div className="kv">
+                  <div className="k">رقم الترخيص:</div>
+                  <div className="v">{fmt(document.license_number)}</div>
                 </div>
               </div>
             </div>
 
             <div className="section">
-              <div className="section-title">بيانات الشاحنة</div>
-              <div className="section-content">
-                <div className="field">
-                  <span className="field-label">الدولة:</span>
-                  <span className="field-value">
-                    {document.truck_country || ""}
-                  </span>
+              <div className="head">بيانات الناقل:</div>
+              <div className="body">
+                <div className="kv">
+                  <div className="k">الاسم:</div>
+                  <div className="v">{fmt(document.carrier_name)}</div>
                 </div>
-                <div className="field">
-                  <span className="field-label">المدينة:</span>
-                  <span className="field-value">
-                    {document.truck_city || ""}
-                  </span>
-                </div>
-                <div className="field">
-                  <span className="field-label">رقم اللوحة:</span>
-                  <span className="field-value">
-                    {document.truck_plate_number || ""}
-                  </span>
-                </div>
-                <div className="field">
-                  <span className="field-label">ترميز اللوحة:</span>
-                  <span className="field-value">
-                    {document.truck_plate_code || ""}
-                  </span>
-                </div>
-                <div className="field">
-                  <span className="field-label">رمز مجموعة التصنيف:</span>
-                  <span className="field-value">
-                    {document.truck_classification_code || ""}
-                  </span>
-                </div>
-                <div className="field">
-                  <span className="field-label">اللون:</span>
-                  <span className="field-value">
-                    {document.truck_color || ""}
-                  </span>
-                </div>
-                <div className="field">
-                  <span className="field-label">
-                    {document.truck_type || "تريلا"}:
-                  </span>
-                  <span className="field-value">
-                    {document.truck_plate_number || ""}
-                  </span>
-                </div>
+                {document.carrier_notes && (
+                  <div className="kv" style={{ marginTop: 8 }}>
+                    <div className="k">ملاحظات:</div>
+                    <div className="v">{document.carrier_notes}</div>
+                  </div>
+                )}
               </div>
             </div>
-          </div>
 
-          {/* Route Info */}
-          <div className="section">
-            <div className="section-title">خط سير الرحلة</div>
-            <div className="section-content">
-              <div style={{ textAlign: "center", fontWeight: "bold" }}>
-                من {document.route_from_city || ""},{" "}
-                {document.route_from_country || ""} الى{" "}
-                {document.route_to_city || ""},{" "}
-                {document.route_to_country || ""}
-              </div>
-            </div>
-          </div>
-
-          {/* Sender and Recipient Info */}
-          <div className="two-columns">
             <div className="section">
-              <div className="section-title">بيانات المرسل</div>
-              <div className="section-content">
-                <div className="field">
-                  <span className="field-label">الإسم:</span>
-                  <span className="field-value">
-                    {document.sender_name || ""}
-                  </span>
+              <div className="head">بيانات السائق:</div>
+              <div className="body twocol">
+                <div className="cell">
+                  <div className="label">رقم هوية السائق</div>
+                  <div className="value">{fmt(document.driver_id_number)}</div>
                 </div>
-                <div className="field">
-                  <span className="field-label">العنوان:</span>
-                  <span className="field-value">
-                    {document.sender_address || ""}
-                  </span>
+                <div className="cell">
+                  <div className="label">الدولة</div>
+                  <div className="value">
+                    {fmt(document.driver_city || document.driver_nationality)}
+                  </div>
                 </div>
-                <div className="field">
-                  <span className="field-label">المدينة:</span>
-                  <span className="field-value">
-                    {document.sender_city || ""}
-                  </span>
+                <div className="cell">
+                  <div className="label">نوع الهوية</div>
+                  <div className="value">{fmt(document.driver_id_type)}</div>
                 </div>
-                <div className="field">
-                  <span className="field-label">الدولة:</span>
-                  <span className="field-value">
-                    {document.sender_country || ""}
-                  </span>
+                <div className="cell">
+                  <div className="label">المدينة</div>
+                  <div className="value">{fmt(document.driver_city)}</div>
                 </div>
-                <div className="field">
-                  <span className="field-label">رقم الهاتف:</span>
-                  <span className="field-value">
-                    {document.sender_phone || ""}
-                  </span>
+                <div className="cell">
+                  <div className="label">اسم السائق</div>
+                  <div className="value">{fmt(document.driver_name)}</div>
+                </div>
+                <div className="cell">
+                  <div className="label">تاريخ ميلاد السائق</div>
+                  <div className="value">{fmt(document.driver_birth_date)}</div>
+                </div>
+                <div className="cell">
+                  <div className="label">رقم جوال السائق</div>
+                  <div className="value">{fmt(document.driver_phone)}</div>
                 </div>
               </div>
             </div>
 
             <div className="section">
-              <div className="section-title">بيانات المرسل إليه</div>
-              <div className="section-content">
-                <div className="field">
-                  <span className="field-label">الإسم:</span>
-                  <span className="field-value">
-                    {document.recipient_name || ""}
-                  </span>
+              <div className="head">بيانات الشاحنة:</div>
+              <div className="body twocol">
+                <div className="cell">
+                  <div className="label">الدولة</div>
+                  <div className="value">{fmt(document.truck_country)}</div>
                 </div>
-                <div className="field">
-                  <span className="field-label">العنوان:</span>
-                  <span className="field-value">
-                    {document.recipient_address || ""}
-                  </span>
+                <div className="cell">
+                  <div className="label">المدينة</div>
+                  <div className="value">{fmt(document.truck_city)}</div>
                 </div>
-                <div className="field">
-                  <span className="field-label">المدينة:</span>
-                  <span className="field-value">
-                    {document.recipient_city || ""}
-                  </span>
+                <div className="cell">
+                  <div className="label">رقم اللوحة</div>
+                  <div className="value">
+                    {fmt(document.truck_plate_number)}
+                  </div>
                 </div>
-                <div className="field">
-                  <span className="field-label">الدولة:</span>
-                  <span className="field-value">
-                    {document.recipient_country || ""}
-                  </span>
+                <div className="cell">
+                  <div className="label">ترميز اللوحة</div>
+                  <div className="value">{fmt(document.truck_plate_code)}</div>
                 </div>
-                <div className="field">
-                  <span className="field-label">رقم الهاتف:</span>
-                  <span className="field-value">
-                    {document.recipient_phone || ""}
-                  </span>
+                <div className="cell">
+                  <div className="label">رمز مجموعة التصنيف</div>
+                  <div className="value">
+                    {fmt(document.truck_classification_code)}
+                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Cargo Items */}
-          <div className="section">
-            <div className="section-title">بيانات البضاعة</div>
-            <div className="section-content">
-              {cargoItems.length > 0 ? (
-                <table>
-                  <thead>
-                    <tr>
-                      <th>وصف البضاعة</th>
-                      <th>العدد</th>
-                      <th>الوزن</th>
-                      <th>الوحدة</th>
-                      <th>الأبعاد (متر)</th>
-                      <th>الحالة</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {cargoItems.map((item, index) => (
-                      <tr key={index}>
-                        <td>{item.description || ""}</td>
-                        <td>{item.quantity || ""}</td>
-                        <td>{item.weight || ""}</td>
-                        <td>{item.unit || ""}</td>
-                        <td>{item.dimensions || ""}</td>
-                        <td>{item.status || ""}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <p>لا توجد بيانات بضاعة</p>
-              )}
-            </div>
-          </div>
-
-          {/* Payment Info */}
-          <div className="section">
-            <div className="section-title">بيانات أجور النقل</div>
-            <div className="section-content">
-              <div className="two-columns">
-                <div className="field">
-                  <span className="field-label">تدفع من قبل:</span>
-                  <span className="field-value">
-                    {document.payment_by || ""}
-                  </span>
+                <div className="cell">
+                  <div className="label">اللون</div>
+                  <div className="value">{fmt(document.truck_color)}</div>
                 </div>
-                <div className="field">
-                  <span className="field-label">طريقة دفع الأجور:</span>
-                  <span className="field-value">
-                    {document.payment_method || ""}
-                  </span>
+                <div className="cell">
+                  <div className="label">نوع المركبة</div>
+                  <div className="value">{fmt(document.truck_type)}</div>
                 </div>
               </div>
-              {document.payment_instructions && (
-                <div className="field" style={{ marginTop: "8px" }}>
-                  <span className="field-label">تعليمات خاصة بدفع الأجور:</span>
-                  <span className="field-value">
-                    {document.payment_instructions}
-                  </span>
-                </div>
-              )}
             </div>
-          </div>
 
-          {/* Cargo Document Number */}
-          {document.cargo_document_number && (
             <div className="section">
-              <div className="section-title">وثيقة بيان حمولة</div>
-              <div className="section-content">
-                <div className="field">
-                  <span className="field-label">رقم الوثيقة:</span>
-                  <span className="field-value">
-                    {document.cargo_document_number}
-                  </span>
+              <div className="head">بيانات المرسل / المرسل إليه:</div>
+              <div className="body twocol">
+                <div className="cell">
+                  <div className="label">اسم المرسل</div>
+                  <div className="value">{fmt(document.sender_name)}</div>
                 </div>
-                <div className="field">
-                  <span className="field-label">قابلة للتداول:</span>
-                  <span className="field-value">
-                    {document.is_negotiable ? "نعم" : "لا"}
-                  </span>
+                <div className="cell">
+                  <div className="label">اسم المرسل إليه</div>
+                  <div className="value">{fmt(document.recipient_name)}</div>
+                </div>
+                <div className="cell">
+                  <div className="label">هاتف المرسل</div>
+                  <div className="value">{fmt(document.sender_phone)}</div>
+                </div>
+                <div className="cell">
+                  <div className="label">هاتف المرسل إليه</div>
+                  <div className="value">{fmt(document.recipient_phone)}</div>
+                </div>
+                <div className="cell">
+                  <div className="label">عنوان المرسل</div>
+                  <div className="value">
+                    {fmt(
+                      document.sender_address ||
+                        `${fmt(document.sender_city)}، ${fmt(
+                          document.sender_country
+                        )}`
+                    )}
+                  </div>
+                </div>
+                <div className="cell">
+                  <div className="label">عنوان المرسل إليه</div>
+                  <div className="value">
+                    {fmt(
+                      document.recipient_address ||
+                        `${fmt(document.recipient_city)}، ${fmt(
+                          document.recipient_country
+                        )}`
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-          )}
 
-          {/* Footer */}
-          <div className="footer">دون أدنى مسؤولية على محتويات الوثيقة</div>
+            <div className="section">
+              <div className="head">بيانات البضاعة:</div>
+              <div className="body">
+                <div className="kv" style={{ marginBottom: 8 }}>
+                  <div className="k">خط سير الرحلة:</div>
+                  <div className="v">
+                    من {fmt(document.route_from_city)}،{" "}
+                    {fmt(document.route_from_country)} إلى{" "}
+                    {fmt(document.route_to_city)}،{" "}
+                    {fmt(document.route_to_country)}
+                  </div>
+                </div>
+                {cargoItems.length > 0 ? (
+                  <div className="table-wrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>وصف البضاعة</th>
+                          <th>العدد</th>
+                          <th>الوزن</th>
+                          <th>الوحدة</th>
+                          <th>الأبعاد (متر)</th>
+                          <th>الحالة</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {cargoItems.map((item, idx) => (
+                          <tr key={idx}>
+                            <td>{fmt(item.description)}</td>
+                            <td>{fmt(item.quantity)}</td>
+                            <td>{fmt(item.weight)}</td>
+                            <td>{fmt(item.unit)}</td>
+                            <td>{fmt(item.dimensions)}</td>
+                            <td>{fmt(item.status)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div style={{ padding: "8px 0" }}>لا توجد بيانات بضاعة</div>
+                )}
+              </div>
+            </div>
 
-          <div className="page-number">الصفحة 1 من 1</div>
-        </div>
+            <div className="section">
+              <div className="head">بيانات أجور النقل:</div>
+              <div className="body twocol">
+                <div className="cell">
+                  <div className="label">تدفع من قبل</div>
+                  <div className="value">{fmt(document.payment_by)}</div>
+                </div>
+                <div className="cell">
+                  <div className="label">طريقة دفع الأجور</div>
+                  <div className="value">{fmt(document.payment_method)}</div>
+                </div>
+                {document.payment_instructions && (
+                  <div className="cell" style={{ gridColumn: "1 / -1" }}>
+                    <div className="label">تعليمات خاصة بدفع الأجور</div>
+                    <div className="value">{document.payment_instructions}</div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {document.cargo_document_number && (
+              <div className="section">
+                <div className="head">وثيقة بيان حمولة</div>
+                <div className="body twocol">
+                  <div className="cell">
+                    <div className="label">رقم الوثيقة</div>
+                    <div className="value">
+                      {document.cargo_document_number}
+                    </div>
+                  </div>
+                  <div className="cell">
+                    <div className="label">قابلة للتداول</div>
+                    <div className="value">
+                      {document.is_negotiable ? "نعم" : "لا"}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="footer">
+              <div>دون أدنى مسؤولية على محتويات الوثيقة</div>
+              <div>
+                الصفحة <strong>1</strong> من <strong>1</strong>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Floating save-to-PDF button */}
+        <button className="print-btn" title="حفظ بصيغة PDF (Ctrl/Cmd + P)">
+          حفظ PDF
+        </button>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `document.addEventListener('keydown', function(e){const isMac=navigator.platform.toUpperCase().includes('MAC');const meta=isMac?e.metaKey:e.ctrlKey;if((meta&&e.key.toLowerCase()==='p')||(!meta&&e.key.toLowerCase()==='p'&&e.altKey)){return;}if(!meta&&e.key.toLowerCase()==='p'&&!e.altKey){e.preventDefault();window.print();}});`,
+          }}
+        />
       </body>
     </html>
   );
