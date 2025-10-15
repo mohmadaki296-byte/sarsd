@@ -15,7 +15,7 @@ export default async function PDFPage({ params }: { params: { id: string } }) {
 
   const document = { id: docSnap.id, ...docSnap.data() } as ShippingDocument;
   const cargoItems = (document.cargo_items as CargoItem[]) || [];
-  const docUrl = `https://sarsd.vercel.app/documents/${document.id}/pdf`;
+  const docUrl = `https://sarsd.vercel.app/documents/${document.id}`;
   const fmt = (v: unknown, alt = "") =>
     v === undefined || v === null || v === "" ? alt : String(v);
 
@@ -43,6 +43,7 @@ export default async function PDFPage({ params }: { params: { id: string } }) {
           html,
           body {
             height: 100%;
+            zoom:0.5;
           }
           body {
             margin: 0;
