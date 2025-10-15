@@ -43,7 +43,7 @@ export default async function PDFPage({ params }: { params: { id: string } }) {
           html,
           body {
             height: 100%;
-            zoom:0.5;
+            zoom:0.6;
           }
           body {
             margin: 0;
@@ -55,7 +55,6 @@ export default async function PDFPage({ params }: { params: { id: string } }) {
           }
           .sheet {
             width: 100%;
-            max-width: 960px;
             margin: 0 auto;
             padding: 0 8px 32px;
             background: #fff;
@@ -226,7 +225,7 @@ export default async function PDFPage({ params }: { params: { id: string } }) {
         `}</style>
       </head>
       <body>
-        <section className="sheet" style={{ zoom: 0.5 }}>
+        <section className="sheet">
           <img src="/lojfds.png" id="qr-img" />
           <div className="page">
             <div className="doc-title">وثيقة نقل</div>
