@@ -12,9 +12,7 @@ export default async function PDFPage({ params }: { params: { id: string } }) {
   if (!docSnap.exists()) {
     notFound();
   }
-  const handlePrint = () => {
-    (window as any).print?.();
-  };
+
   const document = { id: docSnap.id, ...docSnap.data() } as ShippingDocument;
   const cargoItems = (document.cargo_items as CargoItem[]) || [];
   const docUrl = `https://sarsd.vercel.app/documents/${document.id}/pdf`;
