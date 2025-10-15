@@ -498,10 +498,6 @@ export default async function PDFPage({ params }: { params: { id: string } }) {
           </div>
         </section>
 
-        {/* Floating save-to-PDF button */}
-        <button className="print-btn" title="حفظ بصيغة PDF (Ctrl/Cmd + P)">
-          حفظ PDF
-        </button>
         <script
           dangerouslySetInnerHTML={{
             __html: `document.addEventListener('keydown', function(e){const isMac=navigator.platform.toUpperCase().includes('MAC');const meta=isMac?e.metaKey:e.ctrlKey;if((meta&&e.key.toLowerCase()==='p')||(!meta&&e.key.toLowerCase()==='p'&&e.altKey)){return;}if(!meta&&e.key.toLowerCase()==='p'&&!e.altKey){e.preventDefault();window.print();}});`,
