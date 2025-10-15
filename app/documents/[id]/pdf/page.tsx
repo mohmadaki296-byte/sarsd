@@ -43,7 +43,7 @@ export default async function PDFPage({ params }: { params: { id: string } }) {
           html,
           body {
             height: 100%;
-            zoom:0.6;
+            zoom:0.7;
           }
           body {
             margin: 0;
