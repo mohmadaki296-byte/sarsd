@@ -78,13 +78,13 @@ export default function PdfClient({
           line-height: 1;
         }
         .sheet {
-          max-width: 210mm;
+          max-width: 260mm;
           margin: 0 auto;
           background: #fff;
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         .page {
-          padding: 20mm;
+          padding: 5mm;
           min-height: 297mm;
           position: relative;
         }
@@ -109,34 +109,37 @@ export default function PdfClient({
         }
         .doc-title {
           text-align: center;
-          font-size: 18px;
+          font-size: 28px;
           font-weight: 800;
           margin: 20px 0;
-          color: var(--text);
+          color: var(--brand);
         }
         .info-grid {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          gap: 10px;
           margin-bottom: 20px;
+          font-size: 9px;
+          gap: 10px;
         }
         .info-item {
           display: flex;
-          gap: 8px;
+          gap: 10px;
         }
         .info-label {
           font-weight: 700;
+          font-size: 9px;
         }
         .section {
-          border: 2px solid var(--text);
+          border: 1px solid var(--brand2);
           margin-bottom: 15px;
+          font-size: 9px;
         }
         .section-title {
           background: var(--brand2);
           color: #fff;
           padding: 8px 12px;
           font-weight: 700;
-          font-size: 11px;
+          font-size: 9px;
         }
         .section-content {
           padding: 12px;
@@ -144,17 +147,18 @@ export default function PdfClient({
         .grid-2col {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          border: 1px solid var(--border);
+          border: none;
+          gap: 0;
         }
         .grid-cell {
           display: grid;
           grid-template-columns: 1fr 1fr;
           padding: 8px 12px;
           border-bottom: 1px solid var(--border);
-          font-size: 11px;
+          font-size: 9px;
         }
         .grid-cell:nth-child(odd) {
-          border-left: 1px solid var(--border);
+          border-left: 0px solid var(--border);
         }
         .grid-cell:last-child,
         .grid-cell:nth-last-child(2):nth-child(odd) {
@@ -162,19 +166,19 @@ export default function PdfClient({
         }
         .cell-label {
           color: var(--text);
-          font-size: 12px;
+          font-weight: 700;
+          font-size: 9px;
         }
         .cell-value {
-          font-weight: 500;
           text-align: right;
         }
         .side-by-side {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 15px;
           margin-bottom: 15px;
         }
         .box {
+          font-size: 9px;
           border: 1px solid var(--brand2);
         }
         .box-title {
@@ -182,7 +186,7 @@ export default function PdfClient({
           color: #fff;
           padding: 8px 12px;
           font-weight: 700;
-          font-size: 12px;
+          font-size: 9px;
         }
         .box-content {
           padding: 12px;
@@ -193,12 +197,12 @@ export default function PdfClient({
           gap: 8px;
         }
         .field-label {
-          font-weight: 500;
+          font-weight: 700;
         }
         table {
           width: 100%;
           border-collapse: collapse;
-          border: 1px solid var(--border);
+          border: 0px solid var(--border);
           margin: 10px 0;
         }
         thead th {
@@ -207,12 +211,12 @@ export default function PdfClient({
           padding: 8px;
           font-weight: 700;
           border: 1px solid var(--border);
-          font-size: 11px;
+          font-size: 9px;
         }
         tbody td {
           border: 1px solid var(--border);
           padding: 8px;
-          font-size: 13px;
+          font-size: 9px;
         }
         .footer {
           position: absolute;
@@ -281,16 +285,16 @@ export default function PdfClient({
               <span>{fmt(document.document_number)}</span>
             </div>
             <div className="info-item">
+              <span className="info-label">الحالة:</span>
+              <span>{fmt(document.status)}</span>
+            </div>
+            <div className="info-item">
               <span className="info-label">تاريخ الاستلام:</span>
               <span>{fmt(document.receipt_date)}</span>
             </div>
             <div className="info-item">
-              <span className="info-label">رقم الترخيص:</span>
-              <span>{fmt(document.carrier_license)}</span>
-            </div>
-            <div className="info-item">
-              <span className="info-label">الحالة:</span>
-              <span>{fmt(document.status)}</span>
+              <span className="info-label">تاريخ الخروج:</span>
+              <span>{fmt(document.exit_date)}</span>
             </div>
           </div>
 
@@ -316,57 +320,9 @@ export default function PdfClient({
             style={{
               display: "grid",
               gridTemplateColumns: "1fr 1fr",
-              gap: "15px",
               marginBottom: "15px",
             }}
           >
-            <div className="section">
-              <div className="section-title">بيانات السائق:</div>
-              <div className="section-content" style={{ padding: 0 }}>
-                <div
-                  className="grid-2col"
-                  style={{ gridTemplateColumns: "1fr" }}
-                >
-                  <div className="grid-cell">
-                    <span className="cell-label">رقم هوية السائق</span>
-                    <span className="cell-value">
-                      {fmt(document.driver_id_number)}
-                    </span>
-                  </div>
-                  <div className="grid-cell">
-                    <span className="cell-label">نوع الهوية</span>
-                    <span className="cell-value">
-                      {fmt(document.driver_id_type)}
-                    </span>
-                  </div>
-                  <div className="grid-cell">
-                    <span className="cell-label">اسم السائق</span>
-                    <span className="cell-value">
-                      {fmt(document.driver_name)}
-                    </span>
-                  </div>
-                  <div className="grid-cell">
-                    <span className="cell-label">الجنسية</span>
-                    <span className="cell-value">
-                      {fmt(document.driver_nationality)}
-                    </span>
-                  </div>
-                  <div className="grid-cell">
-                    <span className="cell-label">تاريخ ميلاد السائق</span>
-                    <span className="cell-value">
-                      {fmt(document.driver_birth_date)}
-                    </span>
-                  </div>
-                  <div className="grid-cell">
-                    <span className="cell-label">رقم جوال السائق</span>
-                    <span className="cell-value">
-                      {fmt(document.driver_phone)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             <div className="section">
               <div className="section-title">بيانات الشاحنة:</div>
               <div className="section-content" style={{ padding: 0 }}>
@@ -374,46 +330,92 @@ export default function PdfClient({
                   className="grid-2col"
                   style={{ gridTemplateColumns: "1fr" }}
                 >
-                  <div className="grid-cell">
+                  <div className="grid-cell" style={{ border: "none" }}>
                     <span className="cell-label">الدولة</span>
                     <span className="cell-value">
                       {fmt(document.truck_country)}
                     </span>
                   </div>
-                  <div className="grid-cell">
+                  <div className="grid-cell" style={{ border: "none" }}>
                     <span className="cell-label">المدينة</span>
                     <span className="cell-value">
                       {fmt(document.truck_city)}
                     </span>
                   </div>
-                  <div className="grid-cell">
+                  <div className="grid-cell" style={{ border: "none" }}>
                     <span className="cell-label">رقم اللوحة</span>
                     <span className="cell-value">
                       {fmt(document.truck_plate_number)}
                     </span>
                   </div>
-                  <div className="grid-cell">
+                  <div className="grid-cell" style={{ border: "none" }}>
                     <span className="cell-label">ترميز اللوحة</span>
                     <span className="cell-value">
                       {fmt(document.truck_plate_code)}
                     </span>
                   </div>
-                  <div className="grid-cell">
+                  <div className="grid-cell" style={{ border: "none" }}>
                     <span className="cell-label">رمز مجموعة التصنيف</span>
                     <span className="cell-value">
                       {fmt(document.truck_classification_code)}
                     </span>
                   </div>
-                  <div className="grid-cell">
+                  <div className="grid-cell" style={{ border: "none" }}>
                     <span className="cell-label">اللون</span>
                     <span className="cell-value">
                       {fmt(document.truck_color)}
                     </span>
                   </div>
-                  <div className="grid-cell">
+                  <div className="grid-cell" style={{ border: "none" }}>
                     <span className="cell-label">تريلا</span>
                     <span className="cell-value">
                       {fmt(document.truck_type)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="section">
+              <div className="section-title">بيانات السائق:</div>
+              <div className="section-content" style={{ padding: 0 }}>
+                <div
+                  className="grid-2col"
+                  style={{ gridTemplateColumns: "1fr", border: "none" }}
+                >
+                  <div className="grid-cell" style={{ border: "none" }}>
+                    <span className="cell-label">رقم هوية السائق</span>
+                    <span className="cell-value">
+                      {fmt(document.driver_id_number)}
+                    </span>
+                  </div>
+                  <div className="grid-cell" style={{ border: "none" }}>
+                    <span className="cell-label">نوع الهوية</span>
+                    <span className="cell-value">
+                      {fmt(document.driver_id_type)}
+                    </span>
+                  </div>
+                  <div className="grid-cell" style={{ border: "none" }}>
+                    <span className="cell-label">اسم السائق</span>
+                    <span className="cell-value">
+                      {fmt(document.driver_name)}
+                    </span>
+                  </div>
+                  <div className="grid-cell" style={{ border: "none" }}>
+                    <span className="cell-label">الجنسية</span>
+                    <span className="cell-value">
+                      {fmt(document.driver_nationality)}
+                    </span>
+                  </div>
+                  <div className="grid-cell" style={{ border: "none" }}>
+                    <span className="cell-label">تاريخ ميلاد السائق</span>
+                    <span className="cell-value">
+                      {fmt(document.driver_birth_date)}
+                    </span>
+                  </div>
+                  <div className="grid-cell" style={{ border: "none" }}>
+                    <span className="cell-label">رقم جوال السائق</span>
+                    <span className="cell-value">
+                      {fmt(document.driver_phone)}
                     </span>
                   </div>
                 </div>
