@@ -43,7 +43,7 @@ export default function PdfClient({
         margin: [10, 10, 10, 10], // mm
         filename: `shipping-${fmt(document.document_number, document.id)}.pdf`,
         image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, logging: false },
+        html2canvas: { scale: 1, useCORS: true, logging: false },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
         pagebreak: { mode: ["avoid-all", "css", "legacy"] },
       };
@@ -85,7 +85,6 @@ export default function PdfClient({
           margin: 0 auto;
           padding: 0 8px 32px;
           background: #fff;
-          border-inline: 6px solid var(--brand);
         }
         .page {
           padding: 16px 16px 32px;
@@ -261,7 +260,7 @@ export default function PdfClient({
           alt="QR"
           style={{ marginRight: "auto" }}
         />
-        <div className="page">
+        <div className="page" style={{ zoom: 0.6 }}>
           <div className="doc-title">وثيقة نقل</div>
           <div className="topline">
             <div></div>
@@ -283,14 +282,6 @@ export default function PdfClient({
                 <div className="v">
                   {fmt(document.departure_date, "لم يحدد")}
                 </div>
-              </div>
-              <div className="kv">
-                <div className="k">رقم الهاتف:</div>
-                <div className="v">{fmt(document.carrier_phone)}</div>
-              </div>
-              <div className="kv">
-                <div className="k">رقم الترخيص:</div>
-                <div className="v">{fmt(document.license_number)}</div>
               </div>
             </div>
           </div>
@@ -383,7 +374,10 @@ export default function PdfClient({
             </div>
           </div>
 
-          <div className="section">
+          <div
+            className="section"
+            style={{ visibility: "hidden", height: "200vh" }}
+          >
             <div className="head">بيانات المرسل / المرسل إليه:</div>
             <div className="body twocol">
               <div className="cell">
