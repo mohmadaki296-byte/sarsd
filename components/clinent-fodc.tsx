@@ -422,11 +422,6 @@ export default function PdfClient({
             </div>
           </div>
 
-          <div className="info-item" style={{ marginBottom: "10px" }}>
-            <span className="info-label">تاريخ الخروج</span>
-            <span>{fmt(document.departure_date)}</span>
-          </div>
-
           <div className="footer">
             <div>دون أدنى مسؤولية على محتويات الوثيقة</div>
             <div>الصفحة 1 من 1</div>
