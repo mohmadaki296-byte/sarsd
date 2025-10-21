@@ -8,8 +8,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { FileText, Plus, List } from "lucide-react";
+import { ProtectedRoute } from "@/components/protected-route";
 
-export default function Home() {
+function Homea() {
   return (
     <div
       className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100"
@@ -100,5 +101,12 @@ export default function Home() {
         </div>
       </div>
     </div>
+  );
+}
+export default function Home() {
+  return (
+    <ProtectedRoute>
+      <Homea />
+    </ProtectedRoute>
   );
 }

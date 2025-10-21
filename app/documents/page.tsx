@@ -4,10 +4,10 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, Plus } from "lucide-react";
+import { ProtectedRoute } from "@/components/protected-route";
 
 export const dynamic = "force-dynamic";
-
-export default async function DocumentsPage() {
+async function DocumentsPage() {
   const documentsRef = collection(db, "shipping_documents");
   const q = query(documentsRef, orderBy("created_at", "desc"));
   const querySnapshot = await getDocs(q);
@@ -114,5 +114,12 @@ export default async function DocumentsPage() {
         </div>
       </div>
     </div>
+  );
+}
+export default function Page() {
+  return (
+    <ProtectedRoute>
+      <DocumentsPage />
+    </ProtectedRoute>
   );
 }
