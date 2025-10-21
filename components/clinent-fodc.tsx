@@ -176,10 +176,10 @@ export default function PdfClient({
           margin-bottom: 15px;
         }
         .box {
-          border: 1px solid var(--text);
+          border: 1px solid var(--brand2);
         }
         .box-title {
-          background: var(--text);
+          background: var(--brand2);
           color: #fff;
           padding: 8px 12px;
           font-weight: 700;
