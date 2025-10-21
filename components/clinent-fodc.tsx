@@ -85,7 +85,7 @@ export default function PdfClient({
         }
         .page {
           padding: 5mm;
-          min-height: 297mm;
+          min-height: 247mm;
           position: relative;
         }
         .page-break {
@@ -103,9 +103,9 @@ export default function PdfClient({
           height: auto;
         }
         .qr {
-          width: 120px;
-          height: 120px;
-          border: 2px solid var(--border);
+          width: 90px;
+          height: 90px;
+          border: 1px solid var(--border);
         }
         .doc-title {
           text-align: center;
