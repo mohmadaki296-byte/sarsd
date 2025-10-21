@@ -76,7 +76,7 @@ export default function PdfClient({
           color: var(--text);
           font-family: system-ui, -apple-system, "Segoe UI", Roboto,
             "Noto Kufi Arabic", "Noto Naskh Arabic", Tahoma, Arial, sans-serif;
-          line-height: 1.6;
+          line-height: 1;
         }
         .sheet {
           max-width: 210mm;
@@ -110,7 +110,7 @@ export default function PdfClient({
         }
         .doc-title {
           text-align: center;
-          font-size: 24px;
+          font-size: 18px;
           font-weight: 800;
           margin: 20px 0;
           color: var(--text);
@@ -137,7 +137,7 @@ export default function PdfClient({
           color: #fff;
           padding: 8px 12px;
           font-weight: 700;
-          font-size: 14px;
+          font-size: 11px;
         }
         .section-content {
           padding: 12px;
@@ -152,7 +152,7 @@ export default function PdfClient({
           grid-template-columns: 1fr 1fr;
           padding: 8px 12px;
           border-bottom: 1px solid var(--border);
-          font-size: 13px;
+          font-size: 11px;
         }
         .grid-cell:nth-child(odd) {
           border-left: 1px solid var(--border);
@@ -166,7 +166,7 @@ export default function PdfClient({
           font-size: 12px;
         }
         .cell-value {
-          font-weight: 700;
+          font-weight: 500;
           text-align: right;
         }
         .side-by-side {
@@ -176,14 +176,14 @@ export default function PdfClient({
           margin-bottom: 15px;
         }
         .box {
-          border: 2px solid var(--text);
+          border: 1px solid var(--text);
         }
         .box-title {
           background: var(--text);
           color: #fff;
           padding: 8px 12px;
           font-weight: 700;
-          font-size: 14px;
+          font-size: 12px;
         }
         .box-content {
           padding: 12px;
@@ -194,7 +194,7 @@ export default function PdfClient({
           gap: 8px;
         }
         .field-label {
-          font-weight: 700;
+          font-weight: 500;
         }
         table {
           width: 100%;
@@ -208,7 +208,7 @@ export default function PdfClient({
           padding: 8px;
           font-weight: 700;
           border: 1px solid var(--border);
-          font-size: 13px;
+          font-size: 11px;
         }
         tbody td {
           border: 1px solid var(--border);
@@ -222,7 +222,7 @@ export default function PdfClient({
           right: 20mm;
           display: flex;
           justify-content: space-between;
-          font-size: 12px;
+          font-size: 11px;
           color: var(--muted);
         }
         .print-btn {
