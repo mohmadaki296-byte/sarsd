@@ -74,8 +74,7 @@ export default function PdfClient({
           margin: 0;
           background: #f5f5f5;
           color: var(--text);
-          font-family: system-ui, -apple-system, "Segoe UI", Roboto,
-            "Noto Kufi Arabic", "Noto Naskh Arabic", Tahoma, Arial, sans-serif;
+          font-family: "Almarai", sans-serif;
           line-height: 1;
         }
         .sheet {
