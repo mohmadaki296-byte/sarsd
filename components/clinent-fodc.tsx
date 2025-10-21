@@ -43,7 +43,7 @@ export default function PdfClient({
         margin: [10, 10, 10, 10], // mm
         filename: `shipping-${fmt(document.document_number, document.id)}.pdf`,
         image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 1, useCORS: true, logging: false },
+        html2canvas: { scale: 2, useCORS: true, logging: false },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
         pagebreak: { mode: ["avoid-all", "css", "legacy"] },
       };
