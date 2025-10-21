@@ -251,7 +251,7 @@ export default function PdfClient({
         }
       `}</style>
       <section className="sheet" ref={sheetRef} dir="rtl">
-        <img src="/lojfds.png" alt="" style={{ marginTop: 50 }} />
+        <img src="/lojfds.jpg" alt="" style={{ marginTop: 50 }} />
         <img
           src={
             "https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=" +
