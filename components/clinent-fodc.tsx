@@ -68,6 +68,7 @@ export default function PdfClient({
         html,
         body {
           height: 100%;
+          direction: rtl;
         }
         body {
           margin: 0;
@@ -132,7 +133,7 @@ export default function PdfClient({
           margin-bottom: 15px;
         }
         .section-title {
-          background: var(--text);
+          background: var(--brand2);
           color: #fff;
           padding: 8px 12px;
           font-weight: 700;
@@ -202,7 +203,7 @@ export default function PdfClient({
           margin: 10px 0;
         }
         thead th {
-          background: var(--text);
+          background: var(--brand2);
           color: #fff;
           padding: 8px;
           font-weight: 700;
@@ -262,16 +263,7 @@ export default function PdfClient({
         {/* Page 1: Transport Document */}
         <div className="page page-break">
           <div className="header">
-            <div
-              className="logo"
-              style={{
-                width: "150px",
-                height: "80px",
-                border: "1px solid #ccc",
-              }}
-            >
-              {/* Logo placeholder */}
-            </div>
+            <img className="logo" src="/lojfds.png" />
             <img
               src={
                 "https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=" +
